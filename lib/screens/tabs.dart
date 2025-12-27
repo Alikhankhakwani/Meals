@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:meals/providers/filters_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals/screens/categories.dart';
+import 'package:meals/screens/filters.dart';
+import 'package:meals/screens/meals.dart';
+import 'package:meals/widgets/main_drawer.dart';
+
+import 'package:meals/providers/favorites_provider.dart';
+
+const kInitailFilters = {
+  Filter.glutenFree: false,
+  Filter.lactoseFree: false,
+  Filter.vegetarian: false,
+  Filter.vegan: false,
+};
+
+class TabsScreen extends ConsumerStatefulWidget {
+  const TabsScreen({super.key});
+
+  @override
+  ConsumerState<TabsScreen> createState() => _TabsScreenState();
+}
+
+class _TabsScreenState extends ConsumerState<TabsScreen> {
+  int _selectedPageIndex = 0;
+
+  void _selectPage(int index) {
+    setState(() {
+      _selectedPageIndex = index;
+    });
+  }
+
+  void _setScreen(String identifier) async {
+    Navigator.of(context).pop();
+    if (identifier == 'filters') {
+      await Navigator.of(context).push<Map<Filter, bool>>(
+        MaterialPageRoute(builder: (ctx) => FiltersScreen()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final availablemeals = ref.watch(FiteredMealsProvider);
+    Widget activepage = CategoriesScreen(availableMeals: availablemeals);
+    var activepageTitle = 'Categories';
+
+    if (_selectedPageIndex == 1) {
+      final favroiteMeals = ref.watch(favroiteMealsProvider);
+
+      activepage = MealsScreen(meals: favroiteMeals);
+      activepageTitle = 'Your Favorites';
+    }
+
+    return Scaffold(
+      drawer: MainDrawer(onSelectScreen: _setScreen),
+      appBar: AppBar(title: Text(activepageTitle)),
+      body: activepage,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: _selectPage,
+        currentIndex: _selectedPageIndex,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.set_meal),
+            label: 'Categories',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Favorites'),
+        ],
+      ),
+    );
+  }
+}
