@@ -42,14 +42,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availablemeals = ref.watch(FiteredMealsProvider);
-    Widget activepage = CategoriesScreen(availableMeals: availablemeals);
+    final availableMeals = ref.watch(filteredMealsProvider);
+    Widget activepage = CategoriesScreen(availableMeals: availableMeals);
     var activepageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
-      final favroiteMeals = ref.watch(favroiteMealsProvider);
+      final favoriteMeals = ref.watch(favoriteMealsProvider);
 
-      activepage = MealsScreen(meals: favroiteMeals);
+      activepage = MealsScreen(meals: favoriteMeals);
       activepageTitle = 'Your Favorites';
     }
 

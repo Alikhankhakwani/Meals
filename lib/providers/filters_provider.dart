@@ -1,18 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals/providers/meal_providers.dart';
+import 'package:meals/models/meal.dart'; // if needed for the filtered provider
+import 'package:meals/providers/meal_providers.dart'; // existing provider file with `mealsProvider`
 
 enum Filter { glutenFree, lactoseFree, vegetarian, vegan }
 
-class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
-  FiltersNotifier()
-    : super({
-        Filter.glutenFree: false,
-        Filter.lactoseFree: false,
-        Filter.vegetarian: false,
-        Filter.vegan: false,
-      });
+class FiltersNotifier extends Notifier<Map<Filter, bool>> {
+  @override
+  Map<Filter, bool> build() {
+    return {
+      Filter.glutenFree: false,
+      Filter.lactoseFree: false,
+      Filter.vegetarian: false,
+      Filter.vegan: false,
+    };
+  }
 
-  void setFilters(Filter filter, bool isActive) {
+  void setFilter(Filter filter, bool isActive) {
     state = {...state, filter: isActive};
   }
 
@@ -21,13 +24,16 @@ class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
   }
 }
 
-final filtersProvider =
-    StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>((ref) {
-      return FiltersNotifier();
-    });
-final FiteredMealsProvider = Provider((ref) {
+// Main filters provider
+final filtersProvider = NotifierProvider<FiltersNotifier, Map<Filter, bool>>(
+  FiltersNotifier.new,
+);
+
+// Filtered meals provider (auto-recomputes when filters or meals change)
+final filteredMealsProvider = Provider<List<Meal>>((ref) {
   final meals = ref.watch(mealsProvider);
   final activeFilters = ref.watch(filtersProvider);
+
   return meals.where((meal) {
     if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
       return false;

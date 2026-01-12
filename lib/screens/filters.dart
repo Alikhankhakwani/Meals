@@ -18,7 +18,7 @@ class FiltersScreen extends ConsumerWidget {
             onChanged: (isChecked) {
               ref
                   .read(filtersProvider.notifier)
-                  .setFilters(Filter.glutenFree, isChecked);
+                  .setFilter(Filter.glutenFree, isChecked);
             },
             title: Text(
               'Gluten-free',
@@ -42,7 +42,7 @@ class FiltersScreen extends ConsumerWidget {
             onChanged: (isChecked) {
               ref
                   .read(filtersProvider.notifier)
-                  .setFilters(Filter.lactoseFree, isChecked);
+                  .setFilter(Filter.lactoseFree, isChecked);
             },
             title: Text(
               'Lactose-free',
@@ -66,7 +66,7 @@ class FiltersScreen extends ConsumerWidget {
             onChanged: (isChecked) {
               ref
                   .read(filtersProvider.notifier)
-                  .setFilters(Filter.vegetarian, isChecked);
+                  .setFilter(Filter.vegetarian, isChecked);
             },
             title: Text(
               'Vegetarian',
@@ -90,7 +90,7 @@ class FiltersScreen extends ConsumerWidget {
             onChanged: (isChecked) {
               ref
                   .read(filtersProvider.notifier)
-                  .setFilters(Filter.vegan, isChecked);
+                  .setFilter(Filter.vegan, isChecked);
             },
             title: Text(
               'Vegan',
